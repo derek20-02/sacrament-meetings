@@ -8,11 +8,17 @@ export default async function MeetingPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const meeting = getMeetingById(Number(id));
+  const meetingId = Number(id);
+
+  if (!Number.isInteger(meetingId) || meetingId < 1) {
+    notFound();
+  }
+
+   const meeting = await getMeetingById(meetingId);
 
   if (!meeting) {
     notFound();
   }
-
+  
   return <MeetingDetail meeting={meeting} />;
 }

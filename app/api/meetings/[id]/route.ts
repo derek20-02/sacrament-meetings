@@ -1,6 +1,5 @@
 // app/api/meetings/[id]/route.ts
 import { getMeetingById } from '@/lib/meetings-db';
-import type { SacramentMeeting } from '@/lib/types';
 
 export async function GET(
   request: Request,
@@ -16,7 +15,9 @@ export async function GET(
     );
   }
 
-  const meeting: SacramentMeeting | null = getMeetingById(id);
+  //const meeting: SacramentMeeting | null = getMeetingById(id);
+
+  const meeting = await getMeetingById(id);
 
   if (!meeting) {
     return Response.json(

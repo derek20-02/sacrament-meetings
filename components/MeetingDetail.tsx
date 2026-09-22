@@ -13,7 +13,7 @@ export default function MeetingDetail({
   meeting: SacramentMeeting;
 }) {
   return (
-    <article className="space-y-6 rounded-lg bg-white p-6 m-4 border-2 border-gray-200">
+    <article className="space-y-6 rounded-lg bg-white p-6 m-4 border-2 border-gray-800 ">
       <header>
         <p className="text-sm uppercase tracking-wide text-gray-500">
           {meeting.meetingType} meeting
