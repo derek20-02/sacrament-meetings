@@ -11,18 +11,19 @@ export default function Header() {
   });
 
   return (
-     <header className="bg-gray-800  text-white py-4 shadow-md">
-      <nav className="max-w-4xl mx-auto px-4 flex justify-between items-center">
-      <div id="header-title" className="text-2xl font-bold">
-        <Link href="/">Random Ward</Link>
-        <div className="text-sm text-gray-400">{formattedDate}</div>
-        </div>
-      <div>
-        <ul className="flex gap-6">
-        <NavLinks/>
-        </ul>
-        </div>
-      </nav>
-    </header>
+    <header className="bg-gray-800 py-3 text-white shadow-md sm:py-4">
+  <nav className="mx-auto flex max-w-4xl flex-col items-center gap-3 px-4 sm:px-6 md:flex-row md:justify-between md:gap-6 lg:px-8">
+    <div id="header-title" className="text-center md:text-left">
+      <Link href="/" className="text-xl font-bold sm:text-2xl">
+        Random Ward
+      </Link>
+      <div className="text-xs text-gray-400 sm:text-sm">{formattedDate}</div>
+    </div>
+
+    <ul className="flex flex-col items-center gap-2 text-center sm:gap-3 md:flex-row md:gap-6">
+      <NavLinks />
+    </ul>
+  </nav>
+</header>
   );
 }
