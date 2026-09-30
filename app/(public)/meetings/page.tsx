@@ -9,7 +9,7 @@ export default async function MeetingsPage(props: {
   const query = searchParams?.query ?? '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const [meetings, totalPages] = await Promise.all([
+   await Promise.all([
     getMeetings(query, currentPage),
     getMeetingsTotalPages(query),
   ]);

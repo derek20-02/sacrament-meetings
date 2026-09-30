@@ -1,4 +1,8 @@
+
+import Link from "next/link";
+import DeleteButton from "@/components/DeleteButton";
 import type { SacramentMeeting, Hymn } from "@/lib/types";
+
 function HymnDetails({ label, hymn }: { label: string; hymn: Hymn }) {
   return (
     <p>
@@ -13,7 +17,7 @@ export default function MeetingDetail({
   meeting: SacramentMeeting;
 }) {
   return (
-    <article className="space-y-6 rounded-lg bg-white p-6 m-4 border-2 border-gray-800 ">
+    <article className="mx-auto my-4 w-[calc(100%-2rem)] max-w-3xl space-y-4 break-words rounded-lg border-2 border-gray-800 p-4 sm:my-6 sm:space-y-6 sm:p-6 lg:p-8">
       <header>
         <p className="text-sm uppercase tracking-wide text-gray-500">
           {meeting.meetingType} meeting
@@ -90,6 +94,16 @@ export default function MeetingDetail({
         <HymnDetails label="Closing hymn" hymn={meeting.closingHymn} />
         <p>Closing prayer: {meeting.closingPrayer}</p>
       </section>
+
+      <div className="flex items-center gap-2 justify-end">
+    <Link
+      href={`/meetings/${meeting.id}/edit`}
+      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+    >
+      Edit
+    </Link>
+    <DeleteButton id={meeting.id} date={meeting.date} />
+  </div>
     </article>
   );
 }

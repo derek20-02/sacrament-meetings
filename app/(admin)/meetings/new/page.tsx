@@ -1,9 +1,6 @@
-export default function NewMeeting() {
-  return (
-     <>
-    <div>
-      <h2>Create Meeting — Coming in Week 04</h2>
-    </div>
-    </>
-  );
+import MeetingForm from '@/components/MeetingForm';
+import { createMeeting } from '@/lib/actions';
+
+export default function NewMeetingPage() {
+  return <MeetingForm action={createMeeting} submitLabel="Create meeting" />;
 }

@@ -15,8 +15,6 @@ export async function GET(
     );
   }
 
-  //const meeting: SacramentMeeting | null = getMeetingById(id);
-
   const meeting = await getMeetingById(id);
 
   if (!meeting) {

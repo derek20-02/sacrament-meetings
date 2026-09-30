@@ -5,7 +5,7 @@ const sql = neon(process.env.DATABASE_URL!);
 
 const ITEMS_PER_PAGE = 5;
 
-export async function getAllMeetings( query: string = '',
+export async function getAllMeetings(
   currentPage: number = 1,): Promise<SacramentMeeting[]> {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
@@ -32,11 +32,10 @@ export async function getAllMeetings( query: string = '',
   return rows as unknown as SacramentMeeting[];
 }
 
-
 export async function getMeetings(
   query: string = '',
   currentPage: number = 1,
-  
+
 ): Promise<SacramentMeeting[]> {
   const searchTerm = `%${query}%`;
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -107,18 +106,81 @@ export async function getMeetingById(
 export async function addMeeting(
   data: Omit<SacramentMeeting, 'id'>
 ): Promise<SacramentMeeting> {
-  throw new Error('addMeeting: database implementation coming in Week 04');
+
+  const rows = await sql`
+    INSERT INTO MEETINGS (
+      date,  
+      meeting_type ,
+      presiding, 
+      conducting, 
+      announcements,
+      opening_hymn                ,
+      opening_prayer              ,
+      ward_business               ,
+      stake_business              ,
+      sacrament_hymn        ,
+      speakers,
+      closing_hymn                ,
+      closing_prayer              
+      )
+      VALUES (
+      ${data.date},
+      ${data.meetingType},
+      ${data.presiding},
+      ${data.conducting},
+      ${data.announcements ?? []}::text[],
+      ${JSON.stringify(data.openingHymn)}::jsonb,
+      ${data.openingPrayer},
+      ${JSON.stringify(data.wardBusiness)}::jsonb,
+      ${data.stakeBusiness},
+      ${JSON.stringify(data.sacramentHymn)}::jsonb,
+      ${JSON.stringify(data.speakers)}::jsonb,
+      ${JSON.stringify(data.closingHymn)}::jsonb,
+      ${data.closingPrayer}
+    )
+    RETURNING id
+  `;
+
+  const created = await getMeetingById(rows[0].id as number);
+  if (!created) {
+    throw new Error('addMeeting: the meeting was not found after insert');
+  }
+  return created;
 }
 
 export async function updateMeeting(
   id: number,
-  updates: Partial<SacramentMeeting>
+  data: Omit<SacramentMeeting, 'id'>
 ): Promise<SacramentMeeting | null> {
-  throw new Error('updateMeeting: database implementation coming in Week 04');
+  const rows = await sql`
+    UPDATE meetings SET
+      date           = ${data.date},
+      meeting_type   = ${data.meetingType},
+      presiding      = ${data.presiding},
+      conducting     = ${data.conducting},
+      announcements  = ${data.announcements ?? []}::text[],
+      opening_hymn   = ${JSON.stringify(data.openingHymn)}::jsonb,
+      opening_prayer = ${data.openingPrayer},
+      ward_business  = ${JSON.stringify(data.wardBusiness)}::jsonb,
+      stake_business = ${data.stakeBusiness},
+      sacrament_hymn = ${JSON.stringify(data.sacramentHymn)}::jsonb,
+      speakers       = ${JSON.stringify(data.speakers)}::jsonb,
+      closing_hymn   = ${JSON.stringify(data.closingHymn)}::jsonb,
+      closing_prayer = ${data.closingPrayer}
+    WHERE id = ${id}
+    RETURNING id
+  `;
+
+  if (rows.length === 0) return null; 
+
+  return getMeetingById(id);
 }
 
 export async function deleteMeeting(id: number): Promise<boolean> {
-  throw new Error('deleteMeeting: database implementation coming in Week 04');
+   const rows = await sql`
+    DELETE FROM meetings WHERE id = ${id} RETURNING id
+  `;
+  return rows.length > 0;
 }
 
 export async function getCurrentMeetingId(): Promise<number | null> {
@@ -144,16 +206,4 @@ export async function getCurrentMeetingId(): Promise<number | null> {
 
   return fallback.length > 0 ? (fallback[0].id as number) : null;
 }
-/*
-export function getMeetingByDate(date: string): SacramentMeeting | undefined {
-  return meetings.find((meeting) => meeting.date === date);
-}
-
-export function filterMeetingsByType(
-  meetingType: "testimony" | "regular" | "stake" | "general",
-): SacramentMeeting[] {
-  return meetings.filter((meeting) => meeting.meetingType === meetingType);
-}
-*/
-
 

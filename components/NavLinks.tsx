@@ -24,6 +24,15 @@ export default function NavLinks() {
                     Meetings
                 </Link>
             </li>
+            <li>
+                <Link
+                    href="/meetings/new"
+                    className={`block rounded-md px-3 py-2 text-base font-medium transition-colors hover:text-yellow-200 md:text-lg ${pathname === "/meetings/new" ? "text-yellow-300" : ""
+                        }`}
+                >
+                    New Meeting
+                </Link>
+            </li>
         </ul>
     );
 }
