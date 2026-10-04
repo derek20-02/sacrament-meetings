@@ -2,6 +2,7 @@
 import Link from "next/link";
 import DeleteButton from "@/components/DeleteButton";
 import type { SacramentMeeting, Hymn } from "@/lib/types";
+import { auth } from "@/auth";
 
 function HymnDetails({ label, hymn }: { label: string; hymn: Hymn }) {
   return (
@@ -11,12 +12,17 @@ function HymnDetails({ label, hymn }: { label: string; hymn: Hymn }) {
   );
 }
 
-export default function MeetingDetail({
+export default async function MeetingDetail({
   meeting,
 }: {
   meeting: SacramentMeeting;
 }) {
+
+  //Validate the session to check if the user is logged in
+  const session = await auth();
+
   return (
+    <>
     <article className="mx-auto my-4 w-[calc(100%-2rem)] max-w-3xl space-y-4 break-words rounded-lg border-2 border-gray-800 p-4 sm:my-6 sm:space-y-6 sm:p-6 lg:p-8">
       <header>
         <p className="text-sm uppercase tracking-wide text-gray-500">
@@ -33,8 +39,8 @@ export default function MeetingDetail({
         <section>
           <h2 className="text-xl font-semibold text-gray-900">Announcements</h2>
           <ul className="list-disc pl-5 text-gray-900">
-            {meeting.announcements.map((announcement) => (
-              <li key={announcement}>{announcement}</li>
+            {meeting.announcements.map((announcement, index) => (
+              <li key={`${announcement}-${index}`}>{announcement}</li>
             ))}
           </ul>
         </section>
@@ -51,8 +57,8 @@ export default function MeetingDetail({
         <h2 className="text-xl font-semibold ">Ward Business</h2>
         {meeting.wardBusiness.length > 0 ? (
           <ul className="list-disc pl-5 text-gray-900">
-            {meeting.wardBusiness.map((item) => (
-              <li key={item.description}>{item.description}</li>
+            {meeting.wardBusiness.map((item, index) => (
+              <li key={`${item.description}-${index}`}>{item.description}</li>
             ))}
           </ul>
         ) : (
@@ -72,8 +78,8 @@ export default function MeetingDetail({
    
         {meeting.speakers.length > 0 ? (
           <ul className="space-y-2">
-            {meeting.speakers.map((item) => (
-              <li key={`${item.type}-${item.name}`}>
+            {meeting.speakers.map((item, index) => (
+              <li key={`${item.type}-${item.name}-${index}`}>
                 <strong>
                   {item.type === "musical-number"
                     ? "Musical number"
@@ -95,15 +101,19 @@ export default function MeetingDetail({
         <p>Closing prayer: {meeting.closingPrayer}</p>
       </section>
 
-      <div className="flex items-center gap-2 justify-end">
-    <Link
-      href={`/meetings/${meeting.id}/edit`}
-      className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
-    >
-      Edit
-    </Link>
-    <DeleteButton id={meeting.id} date={meeting.date} />
-  </div>
+      {session?.user && (
+        <div className="flex items-center justify-end gap-2">
+          <Link
+            href={`/meetings/${meeting.id}/edit`}
+            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+          >
+            Edit
+          </Link>
+          <DeleteButton id={meeting.id} date={meeting.date} />
+        </div>
+      )}
+  
     </article>
+    </>
   );
 }

@@ -24,6 +24,7 @@ export default function DeleteButton({
   id: number;
   date: string;
 }) {
+  
   return (
     <form
       action={deleteMeeting.bind(null, id)}

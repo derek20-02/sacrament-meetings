@@ -1,8 +1,12 @@
 import Link from 'next/link';
 import NavLinks from "./NavLinks";
+import SingOut from "./SingOut";
+import { auth } from "@/auth";
 
-export default function Header() {
-  
+export default async function Header() {
+  // Fetch the session on the server side  
+  const session = await auth();
+
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString("en-US", {
     month: "long",
@@ -19,10 +23,10 @@ export default function Header() {
       </Link>
       <div className="text-xs text-gray-400 sm:text-sm">{formattedDate}</div>
     </div>
-
     <ul className="flex flex-col items-center gap-2 text-center sm:gap-3 md:flex-row md:gap-6">
       <NavLinks />
     </ul>
+    {session?.user && <SingOut/>}
   </nav>
 </header>
   );

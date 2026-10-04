@@ -3,6 +3,7 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect, notFound } from 'next/navigation';
+import { requireAdmin } from './auth-guard';
 import { addMeeting, 
         updateMeeting as updateMeetingDb,
         deleteMeeting as deleteMeetingDb} from './meetings-db';
@@ -98,6 +99,8 @@ export async function createMeeting(
   prevState: State,
   formData: FormData
 ): Promise<State> {
+  await requireAdmin();
+
   const validated = MeetingFormSchema.safeParse(parseMeetingFormData(formData));
 
   if (!validated.success) {
@@ -124,6 +127,9 @@ export async function updateMeeting(
   prevState: State,
   formData: FormData
 ): Promise<State> {
+
+  await requireAdmin();
+  
   const validated = MeetingFormSchema.safeParse(parseMeetingFormData(formData));
 
   if (!validated.success) {
@@ -148,6 +154,7 @@ export async function updateMeeting(
 }
 
 export async function deleteMeeting(id: number): Promise<void> {
+  await requireAdmin();
   try {
     await deleteMeetingDb(id);
   } catch (error) {
